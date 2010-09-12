@@ -1,14 +1,12 @@
-== TelenorSMS
 A library for sending SMS using Telenor's website.
-
 Note: You have to be a customer of Telenor in order to login.
 
 This library was inspired by http://github.com/fossmo/kjappsms
 
-== Install
+How to install?
 Not a gem yet. Code must be forked
 
-== How to use
+How to use?
 sms_sender = TelenorSMS.new "91919191" "password"
 sms_sender.send "hello world", "99999999"
  
