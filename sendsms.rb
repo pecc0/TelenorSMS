@@ -1,4 +1,4 @@
-require 'lib/telenorsms'
+require './lib/telenorsms'
 
 username = ARGV[0]
 password = ARGV[1]
