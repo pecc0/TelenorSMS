@@ -15,8 +15,9 @@ class TelenorSMS
 
     @agent = Mechanize.new
     @agent.user_agent_alias = "Windows IE 6"
-    @agent.agent.http.verify_mode = OpenSSL::SSL::VERIFY_NONE #windows openssl "fix". I don't care for security
-    @login_url = "https://login.telenor.bg/login"
+    #@agent.agent.http.verify_mode = OpenSSL::SSL::VERIFY_NONE #windows openssl "fix". If you don't care for security
+    @agent.agent.http.ca_file=File.expand_path(File.dirname(__FILE__)) + "/cacert.pem"
+    @login_url = "https://login.telenor.bg/login?locale=en"
     login username, password
   end
 
@@ -28,8 +29,10 @@ class TelenorSMS
     login_form.password = password
     @agent.submit(login_form)
 
-    if @agent.page.uri == @login_url then
-      error = @agent.page / "div[id='main_content']" / "div[class='section error']" / "span"
+    #print "submitted " + @agent.page.uri.to_s + "-" + @login_url + "\n"
+
+    if @agent.page.uri.path == URI.parse(@login_url).path then
+      error = @agent.page / "span[id='credentials.errors']"
       if error != nil then raise error.inner_html end
     end
   end
