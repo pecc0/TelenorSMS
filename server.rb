@@ -2,13 +2,17 @@ require 'webrick'
 require 'webrick/https'
 require './lib/telenorsms'
 
-cert_name = [
-  %w[CN localhost],
-]
+#cert_name = [
+#  %w[CN localhost],
+#]
+
+cert = OpenSSL::X509::Certificate.new File.read 'cert.pem'
+pkey = OpenSSL::PKey::RSA.new File.read 'key.pem'
 
 server = WEBrick::HTTPServer.new(:Port => 8000,
-                                 :SSLEnable => false,
-                                 :SSLCertName => cert_name)
+                                 :SSLEnable => true,
+                                 :SSLCertificate => cert,
+                                 :SSLPrivateKey => pkey)
 
 trap 'INT' do server.shutdown end
 
