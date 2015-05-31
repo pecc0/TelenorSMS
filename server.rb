@@ -61,7 +61,7 @@ Recipient:<br>
 <br>
 Message:<br>
 <textarea rows="4" cols="50" name="message"></textarea>
-
+<br>
 <input type="submit">
 
 </form>
