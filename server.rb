@@ -60,7 +60,7 @@ Recipient:<br>
 </datalist>
 <br>
 Message:<br>
-<textarea name="message"></textarea>
+<textarea rows="4" cols="50" name="message"></textarea>
 
 <input type="submit">
 
