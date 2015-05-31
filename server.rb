@@ -2,12 +2,11 @@ require 'webrick'
 require 'webrick/https'
 require './lib/telenorsms'
 
-#cert_name = [
-#  %w[CN localhost],
-#]
-
+#create a self-signed certificate with
+#openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 1024
+#store the password in key.password
 cert = OpenSSL::X509::Certificate.new File.read 'cert.pem'
-pkey = OpenSSL::PKey::RSA.new File.read 'key.pem'
+pkey = OpenSSL::PKey::RSA.new(File.read('key.pem'), File.read('key.password'))
 
 server = WEBrick::HTTPServer.new(:Port => 8000,
                                  :SSLEnable => true,
@@ -19,6 +18,10 @@ trap 'INT' do server.shutdown end
 server.mount_proc '/sendsms' do |req, res|
   #res.body = req.query
   
+  #Create recipients.rb with a ruby hash with names and numbers. Example:
+  #{
+    #"Name"=>"123456789",
+  #}
   recipients = eval(File.open('recipients.rb') {|f| f.read })
   
   if req.query.has_key?("username") && req.query.has_key?("password") && 
